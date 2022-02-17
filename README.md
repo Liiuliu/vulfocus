@@ -82,6 +82,20 @@ Vulfocus 的 docker 仓库 [https://hub.docker.com/u/vulfocus](https://hub.docke
 
 ## FAQ
 
+**普通用户无法查看漏洞题目?**
+
+  1.以管理员身份登录系统，进入镜像管理界面，选择某一个镜像进行修改（如果这里镜像显示为空可以先添加镜像）
+
+  ![](https://img.wenhairu.com/images/2022/02/15/QdgjU.png)
+
+   2.将镜像的分数设置为0
+
+  ![](https://img.wenhairu.com/images/2022/02/15/Qd0sK.png)
+
+3.以普通用户身份登录进入vulfocus首页，这时可以看见自己刚才修改的镜像，启动镜像并且提交flag,通关后将显示所有镜像
+
+![](https://img.wenhairu.com/images/2022/02/15/QdzXP.png)
+
 **镜像启动后立即访问地址失败？**
 
 1. 根据镜像的大小，启动时间会有不同的延迟，一般在几秒以内。
@@ -93,12 +107,30 @@ Vulfocus 的 docker 仓库 [https://hub.docker.com/u/vulfocus](https://hub.docke
 **拉取镜像时一直卡在哪里**
 
 1. 由于网络延迟或镜像太大的原因时间会长一点。
-
 2. 镜像名称填错，也会卡在哪里，建议强刷一下。
+
+**通过docker运行vulfocus提示服务器内部错误**
+
+   1.通过docker logs命令查看容器日志信息
+
+![](https://img.wenhairu.com/images/2022/02/15/QiQcp.png)
+
+   2.通过docker exec -it <container_id> /bin/sh命令进入容器（container_id为容器运行id）在容器内部执行tail -f celery.log查看后台日志信息
+
+![](https://img.wenhairu.com/images/2022/02/15/QiHDX.png)
 
 **Centos 无权限操作Docker**
 
 [centos7 docker版本应用无法添加镜像](https://github.com/fofapro/vulfocus/issues/6)
+
+**环境一直处于启动中**
+
+1. 查看celery.log的日志文件输出，检查是否抛出异常信息
+2. 检查服务器CPU和内存的使用情况，倘若内存和CPU不足也会导致镜像无法启动
+
+
+
+
 
 ## Contributors
 
