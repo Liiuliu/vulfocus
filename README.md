@@ -82,6 +82,8 @@ Vulfocus 的 docker 仓库 [https://hub.docker.com/u/vulfocus](https://hub.docke
 
 ## FAQ
 
+
+
 **普通用户无法查看漏洞题目?**
 
   1.以管理员身份登录系统，进入镜像管理界面，选择某一个镜像进行修改（如果这里镜像显示为空可以先添加镜像）
@@ -96,18 +98,26 @@ Vulfocus 的 docker 仓库 [https://hub.docker.com/u/vulfocus](https://hub.docke
 
 ![](https://img.wenhairu.com/images/2022/02/15/QdzXP.png)
 
+
+
 **镜像启动后立即访问地址失败？**
 
 1. 根据镜像的大小，启动时间会有不同的延迟，一般在几秒以内。
+
+
 
 **提交完 flag 后会有卡住？**
 
 1. 在提交完正确flag后，会进行镜像关闭的动作，所以会有几秒的延迟。
 
+
+
 **拉取镜像时一直卡在哪里**
 
 1. 由于网络延迟或镜像太大的原因时间会长一点。
 2. 镜像名称填错，也会卡在哪里，建议强刷一下。
+
+
 
 **通过docker运行vulfocus提示服务器内部错误**
 
@@ -119,9 +129,13 @@ Vulfocus 的 docker 仓库 [https://hub.docker.com/u/vulfocus](https://hub.docke
 
 ![](https://img.wenhairu.com/images/2022/02/15/QiHDX.png)
 
+
+
 **Centos 无权限操作Docker**
 
 [centos7 docker版本应用无法添加镜像](https://github.com/fofapro/vulfocus/issues/6)
+
+
 
 **环境一直处于启动中**
 
@@ -129,6 +143,109 @@ Vulfocus 的 docker 仓库 [https://hub.docker.com/u/vulfocus](https://hub.docke
 2. 检查服务器CPU和内存的使用情况，倘若内存和CPU不足也会导致镜像无法启动
 
 
+
+**如何将容器内部数据保存到主机上**
+
+```
+docker create -p 80:80 -v /var/run/docker.sock:/var/run/docker.sock -v /xxx/db.sqlite3:/vulfocus-api/db.sqlite3 -e VUL_IP=xxx.xxx.xxx.xxx vulfocus/vulfocus:latest
+
+docker start container_id
+```
+
+ 注意：当第一次使用docker create  -p 80:80 -v /var/run/docker.sock:/var/run/docker.sock -v /xxx/db.sqlite3:/vulfocus-api/db.sqlite3 -e VUL_IP=xxx.xxx.xxx.xxx vulfocus/vulfocus:latest 时必须要保证/xxx/db.sqlite3是从GitHub上下载的最新数据库，否则容器运行将会抛出服务器内部错误
+
+
+
+**自定义安装数据库迁移报错**
+
+进入项目所在的目录的vulfocus-api文件夹目录下，执行下面命令
+
+```
+rm -rf $(find ./**/migrations/00*)
+```
+
+![](https://img.wenhairu.com/images/2022/02/26/RO6uR.png)
+
+
+
+执行命令
+
+```
+python3 manage.py makemigrations
+python3 manage.py migrate --fake
+```
+
+若经过上面步骤如果数据库迁移还是报错，请检查数据库是否与文件夹下的迁移记录产生冲突，可用数据库连接工具检查数据库的表结构
+
+
+
+**场景无法下载**
+
+目前官网的所有场景支持压缩包方式构建，构建步骤如下
+
+1. 进入场景管理/环境编排管理，点击添加场景，选择创建编排模式
+
+![](https://img.wenhairu.com/images/2022/02/26/RO8ZN.png)
+
+   2.点击上传，选中要构建的场景压缩包（压缩包暂不支持普通用户下载，可联系系统管理员下载）
+
+![](https://img.wenhairu.com/images/2022/02/26/ROAzB.png)
+
+
+
+![](https://img.wenhairu.com/images/2022/02/26/ROqKn.png)
+
+​     3.上传成功后点击保存
+
+![](https://img.wenhairu.com/images/2022/02/26/ROF7A.png)
+
+​    4.这时可在环境编排管理界面看见新上传的场景，点击发布并且发布成功后即可使用（发布的过程会下载场景所需镜像，等待镜像下载完毕即可）
+
+![](https://img.wenhairu.com/images/2022/02/26/ROfNG.png)
+
+   5.发布成功后即可在场景处看见新的场景
+
+![](https://img.wenhairu.com/images/2022/02/26/ROwnv.png)
+
+
+
+**如何设置镜像运行时长**
+
+在系统管理/系统配置处可修改镜像的运行时长
+
+![](https://img.wenhairu.com/images/2022/02/26/ROCV0.png)
+
+
+
+**镜像一键同步报错**
+
+
+
+- 自定义安装
+
+修改项目目录下的vulfocus-api/dockerapi/views.py文件，修改get_timing_imgs函数，将vulfocus.fofa.so替换成vulfocus.io
+
+![](https://img.wenhairu.com/images/2022/02/26/ROWuj.png)
+
+
+
+- docker镜像启动
+
+  1.将容器内部的/vulfocus-api/dockerapi/views.py文件拷贝至主机当前目录
+
+![](https://img.wenhairu.com/images/2022/02/26/RODZg.png)
+
+
+
+修改当前目录下拷贝出来的views.py文件，修改get_timing_imgs函数，将vulfocus.fofa.so替换成vulfocus.io
+
+![](https://img.wenhairu.com/images/2022/02/26/ROWuj.png)
+
+
+
+将修改好的views文件重新copy至容器内部
+
+![](https://img.wenhairu.com/images/2022/02/26/ROEjK.png)
 
 
 

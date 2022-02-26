@@ -361,3 +361,36 @@ systemctl restart firewalld.service
    chmod 666 /var/run/docker.sock #注意此处完成配置后尽量不要重新启动docker,否则nginx用户将失去docker的运行权限
    ```
 
+
+
+## docker-compose 安装
+
+#### 拉取 vulfocus 和安装项目依赖
+
+```
+cd /data
+git clone https://github.com/fofapro/vulfocus.git web
+```
+
+#### 配置环境参数
+
+```
+cd /data/web
+vim docker-compose.yaml
+```
+#### 修改环境运行ip
+
+将环境变量VUL_IP替换成本机ip
+
+![](https://img.wenhairu.com/images/2022/02/26/ROK6U.png)
+
+
+
+#### 启动项目
+
+```
+docker-compose up
+```
+
+这时浏览器地址栏输入本机ip即可访问vulfocus服务
+
